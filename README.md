@@ -35,7 +35,7 @@ A Telegram bot for betting ICP tokens on emoji dice games. Players type a bet am
 - `dfx` (ICP Canister SDK) installed and configured
 - A Telegram bot token (from @BotFather)
 - An ICP ledger canister ID (`ryjl3-tyaaa-aaaaa-aaaba-cai` on mainnet)
-- A `MASTERGLAZER` dfx identity with funds for paying out winnings
+- A `TREASURY` dfx identity with funds for paying out winnings
 
 ## Configuration
 
@@ -43,8 +43,8 @@ Open `src/main.rs` and set your values:
 
 ```rust
 let bot = Bot::new("YOUR_TELEGRAM_BOT_TOKEN");
-const MASTERGLAZER_PRINCIPAL: &str = "YOUR_MASTER_WALLET_PRINCIPAL";
-const MASTERGLAZER_IDENTITY: &str = "MASTERGLAZER"; // dfx identity name
+const TREASURY_PRINCIPAL: &str = "YOUR_TREASURY_WALLET_PRINCIPAL";
+const TREASURY_IDENTITY: &str = "TREASURY"; // dfx identity name
 const GAME_THREAD_ID: i64 = YOUR_FORUM_THREAD_ID;
 const GAME_CHAT_ID: i64 = YOUR_CHAT_ID;
 ```
@@ -70,7 +70,7 @@ icp_gamebot/
 
 ## ICP Transfers
 
-- **Bets** are transferred from the player to the treasury (masterglazer) before the game
+- **Bets** are transferred from the player to the treasury before the game
 - **Winnings** are transferred from the treasury to the player on a win
 - **Losses** stay in the treasury
 - All transfers use `dfx canister call --ic ryjl3-tyaaa-aaaaa-aaaba-cai icrc1_transfer`

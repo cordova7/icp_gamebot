@@ -486,9 +486,9 @@ async fn determine_win(
 
                 // SEND GLAZEMASTER
 
-                masterglazer_transfer(user.id.0.to_string(), rewards).await;
+                treasury_transfer(user.id.0.to_string(), rewards).await;
 
-                let masterglazer_balance = masterglazer_check_balance().await;
+                let treasury_balance = treasury_check_balance().await;
 
                 let _msg_to_forward = bot
                     .send_message(
@@ -508,7 +508,7 @@ async fn determine_win(
                     .await;
 
                 //add glaze treasury here
-                let mg_balance = masterglazer_balance
+                let mg_balance = treasury_balance
                     .unwrap_or_default()
                     .parse::<i32>()
                     .unwrap_or_default();
@@ -542,11 +542,11 @@ async fn determine_win(
                     user.full_name()
                 );
 
-                let masterglazer_balance = masterglazer_check_balance().await;
+                let treasury_balance = treasury_check_balance().await;
 
                 transfer_bet(user.id.0.to_string(), icp_bet.clone()).await;
 
-                let mg_balance = masterglazer_balance
+                let mg_balance = treasury_balance
                     .unwrap_or_default()
                     .parse::<i32>()
                     .unwrap_or_default();
@@ -658,7 +658,7 @@ pub async fn transfer_bet(user_id: String, amount: f32) -> bool {
         return false;
     }
 
-    let masterglazer_principal = "hjeru-fryw4-tc7c3-e7yx5-4ssj5-udjrq-nkjev-v7cfe-e2ium-pqccc-6ae";
+    let treasury_principal = "hjeru-fryw4-tc7c3-e7yx5-4ssj5-udjrq-nkjev-v7cfe-e2ium-pqccc-6ae";
 
     let transaction = match std::process::Command::new("dfx")
         .arg("canister")
@@ -670,7 +670,7 @@ pub async fn transfer_bet(user_id: String, amount: f32) -> bool {
         .arg("icrc1_transfer")
         .arg(format!(
             r#"(record {{ to = record {{ owner = principal "{}";}}; amount = {}:nat;}})"#,
-            masterglazer_principal, fmt_amount
+            treasury_principal, fmt_amount
         ))
         .output()
     {
@@ -694,8 +694,8 @@ pub async fn transfer_bet(user_id: String, amount: f32) -> bool {
     false
 }
 
-async fn masterglazer_transfer(user_id: String, reward_amount: f32) {
-    println!("inside masterglazer_transfer fn:");
+async fn treasury_transfer(user_id: String, reward_amount: f32) {
+    println!("inside treasury_transfer fn:");
     let fmt_reward_amount = to_eight_decimal_representation(reward_amount).await;
 
     let principal_id = match std::process::Command::new("dfx")
@@ -715,7 +715,7 @@ async fn masterglazer_transfer(user_id: String, reward_amount: f32) {
     let transaction = match std::process::Command::new("dfx")
         .arg("canister")
         .arg("--identity")
-        .arg("MASTERGLAZER")
+        .arg("TREASURY")
         .arg("call")
         .arg("--ic")
         .arg("ryjl3-tyaaa-aaaaa-aaaba-cai")
@@ -800,8 +800,8 @@ async fn check_balance(_bot: Bot, user_id: String, input_number: f32) -> Result<
     Ok(false)
 }
 
-async fn masterglazer_check_balance() -> Option<String> {
-    let masterglazer_principal = "hjeru-fryw4-tc7c3-e7yx5-4ssj5-udjrq-nkjev-v7cfe-e2ium-pqccc-6ae";
+async fn treasury_check_balance() -> Option<String> {
+    let treasury_principal = "hjeru-fryw4-tc7c3-e7yx5-4ssj5-udjrq-nkjev-v7cfe-e2ium-pqccc-6ae";
 
     let output = match std::process::Command::new("dfx")
         .arg("canister")
@@ -811,7 +811,7 @@ async fn masterglazer_check_balance() -> Option<String> {
         .arg("icrc1_balance_of")
         .arg(format!(
             r#"(record {{ owner = principal "{}";}})"#,
-            masterglazer_principal
+            treasury_principal
         ))
         .output()
     {
